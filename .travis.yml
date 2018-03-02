@@ -1,8 +1,15 @@
-{
-  "language": "node_js",
-  "node_js": "8",
-  "script": [
-    "npm run build",
-    "npm run test"
-  ]
-}
+language: node_js
+node_js: 
+  - 8
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+script:
+  - npm run build
+  - npm run test
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+env:
+  global:
+    - CC_TEST_REPORTER_ID=0bd59fbb2b04b12680744a72cfa6025b5625a622a004b177c5a12570b984a069
