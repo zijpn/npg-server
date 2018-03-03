@@ -4,7 +4,7 @@
   "private": true,
   "description": "Network PlayGround Server",
   "scripts": {
-    "build": "tsc",
+    "build": "rm -r dist/public && tsc && cp -r public dist",
     "serve": "node dist",
     "lint": "tslint -t stylish -c tslint.json -p tsconfig.json",
     "schema": "ajv compile -s schema/schema.json && ajv -s schema/schema.json -d schema/example.json",
