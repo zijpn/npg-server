@@ -1,0 +1,152 @@
+{
+  "$id": "https://github.com/zijpn/npg-server/schema/npg-file.json",
+  "type": "object",
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "name": {
+      "$id": "/properties/name",
+      "type": "string",
+      "description": "Project name"
+    },
+    "topology": {
+      "$id": "/properties/topology",
+      "type": "object",
+      "description": "Network topology",
+      "properties": {
+        "backends": {
+          "$id": "/properties/topology/properties/backends",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "description": "List of backend servers",
+          "items": {
+            "$id": "/properties/topology/properties/backends/items",
+            "type": "string",
+            "description": "Default backend",
+            "default": "localhost"
+          }
+        },
+        "nodes": {
+          "$id": "/properties/topology/properties/nodes",
+          "type": "array",
+          "description": "List of nodes",
+          "items": {
+            "$id": "/properties/topology/properties/nodes/items",
+            "type": "object",
+            "properties": {
+              "backend": {
+                "$id": "/properties/topology/properties/nodes/items/properties/backend",
+                "type": "string"
+              },
+              "name": {
+                "$id": "/properties/topology/properties/nodes/items/properties/name",
+                "type": "string"
+              },
+              "image": {
+                "$id": "/properties/topology/properties/nodes/items/properties/image",
+                "type": "string"
+              },
+              "x": {
+                "$id": "/properties/topology/properties/nodes/items/properties/x",
+                "type": "integer"
+              },
+              "y": {
+                "$id": "/properties/topology/properties/nodes/items/properties/y",
+                "type": "integer"
+              },
+              "command": {
+                "$id": "/properties/topology/properties/nodes/items/properties/command",
+                "type": "string"
+              },
+              "privileged": {
+                "$id": "/properties/topology/properties/nodes/items/properties/privileged",
+                "type": "boolean"
+              },
+              "volumes": {
+                "$id": "/properties/topology/properties/nodes/items/properties/volumes",
+                "type": "array",
+                "items": {
+                  "$id": "/properties/topology/properties/nodes/items/properties/volumes/items",
+                  "type": "string"
+                }
+              },
+              "env": {
+                "$id": "/properties/topology/properties/nodes/items/properties/env",
+                "type": "array",
+                "items": {
+                  "$id": "/properties/topology/properties/nodes/items/properties/env/items",
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "backend",
+              "name",
+              "image"
+            ]
+          }
+        },
+        "links": {
+          "$id": "/properties/topology/properties/links",
+          "type": "array",
+          "description": "List of links",
+          "items": {
+            "$id": "/properties/topology/properties/links/items",
+            "type": "object",
+            "properties": {
+              "name": {
+                "$id": "/properties/topology/properties/links/items/properties/name",
+                "type": "string"
+              },
+              "x": {
+                "$id": "/properties/topology/properties/links/items/properties/x",
+                "type": "integer"
+              },
+              "y": {
+                "$id": "/properties/topology/properties/links/items/properties/y",
+                "type": "integer"
+              },
+              "nodes": {
+                "$id": "/properties/topology/properties/links/items/properties/nodes",
+                "type": "array",
+                "description": "List of connected nodes",
+                "items": {
+                  "$id": "/properties/topology/properties/links/items/properties/nodes/items",
+                  "type": "string"
+                }
+              },
+              "netem": {
+                "$id": "/properties/topology/properties/links/items/properties/netem",
+                "type": "object",
+                "properties": {
+                  "node": {
+                    "$id": "/properties/topology/properties/links/items/properties/netem/properties/node",
+                    "type": "string"
+                  },
+                  "bw": {
+                    "$id": "/properties/topology/properties/links/items/properties/netem/properties/bw",
+                    "type": "integer"
+                  }, 
+                  "delay": {
+                    "$id": "/properties/topology/properties/links/items/properties/netem/properties/delay",
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        }  
+      },
+      "required": [
+        "backends",
+        "nodes",
+        "links"
+      ]
+    }
+  },
+  "required": [
+    "name",
+    "topology"
+  ]
+}

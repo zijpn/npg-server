@@ -1,0 +1,46 @@
+{
+    "name": "example",
+    "topology": {
+        "backends": [
+            "localhost"
+        ],
+        "nodes": [
+            {
+                "backend": "localhost",
+                "name": "node1",
+                "image": "base:2.0"
+            },
+            {
+                "backend": "localhost",
+                "name": "node2",
+                "image": "base:2.0"
+            },
+            {
+                "backend": "localhost",
+                "name": "node3",
+                "image": "base:2.0"
+            }
+        ],
+        "links": [
+            {
+                "name": "bridge1",
+                "nodes": [
+                    "node1",
+                    "node2"
+                ],
+                "netem": {
+                    "node": "node1",
+                    "bw": 500000,
+                    "delay": 100
+                }
+            },
+            {
+                "name": "bridge2",
+                "nodes": [
+                    "node2",
+                    "node3"
+                ]
+            }
+        ]
+    }
+}

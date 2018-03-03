@@ -7,6 +7,7 @@
     "build": "tsc",
     "serve": "node dist",
     "lint": "tslint -t stylish -c tslint.json -p tsconfig.json",
+    "schema": "ajv compile -s schema/schema.json && ajv -s schema/schema.json -d schema/example.json",
     "dep": "npm-check -s",
     "test": "jest --coverage --no-cache",
     "prod": "npm run build && NODE_ENV=production PORT=8080 npm run serve"
@@ -23,6 +24,7 @@
     "@types/node": "^9.4.6",
     "@types/std-mocks": "^1.0.0",
     "@types/winston": "^2.3.8",
+    "ajv-cli": "^3.0.0",
     "jest": "^22.4.2",
     "npm-check": "^5.5.2",
     "std-mocks": "^1.0.1",

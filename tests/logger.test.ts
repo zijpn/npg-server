@@ -1,5 +1,5 @@
 import { logger, maxlog, MemLogger } from '../src/logger'
-import * as stdMocks from 'std-mocks'
+import stdMocks from 'std-mocks'
 
 describe('logger', () => {
   it('memory logger', () => {
