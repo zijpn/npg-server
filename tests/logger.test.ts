@@ -1,5 +1,5 @@
-import { logger, maxlog, MemLogger } from '../src/logger'
 import stdMocks from 'std-mocks'
+import { logger, maxlog, MemLogger } from '../src/logger'
 
 describe('logger', () => {
   it('memory logger', () => {
@@ -10,8 +10,8 @@ describe('logger', () => {
   })
 
   it('log message', () => {
-    let memlog = logger.transports.mem as MemLogger
-    let msg = 'first unit test msg'
+    const memlog = logger.transports.mem as MemLogger
+    const msg = 'first unit test msg'
     expect(memlog.archive.length).toBe(0)
     logger.info(msg)
     expect(memlog.archive.length).toBe(1)
@@ -21,30 +21,30 @@ describe('logger', () => {
   })
 
   it('maxlog messages', () => {
-    let max = maxlog * 2
+    const max = maxlog * 2
     for (let i = 0; i < max; i += 1) {
       logger.info(`unit test msg ${i}`)
     }
-    let memlog = logger.transports.mem as MemLogger
+    const memlog = logger.transports.mem as MemLogger
     expect(memlog.archive.length).toBe(maxlog)
   })
 
   it('multi transport', () => {
     process.env.NODE_ENV = 'production'
     jest.resetModules()
-    const logger = require('../src/logger')
-    expect(Object.keys(logger.logger.transports).length).toBe(2)
+    const log = require('../src/logger')
+    expect(Object.keys(log.logger.transports).length).toBe(2)
   })
 
   it('colorized console', () => {
-    let logger = require('../src/logger')
-    expect(logger.logger.transports.console.colorize).toBeTruthy()
+    const log = require('../src/logger')
+    expect(log.logger.transports.console.colorize).toBeTruthy()
   })
 
   it('timestamp', () => {
-    let logger = require('../src/logger')
+    const log = require('../src/logger')
     stdMocks.use()
-    logger.logger.info('testje')
+    log.logger.info('testje')
     stdMocks.restore()
     const output = stdMocks.flush()
     expect(output.stdout[0]).toMatch(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/)
