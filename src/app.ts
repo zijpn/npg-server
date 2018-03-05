@@ -3,12 +3,12 @@ import express from 'express'
 class App {
   public app: express.Application
 
-  constructor () {
+  constructor() {
     this.app = express()
     this.config()
   }
 
-  private config (): void {
+  private config(): void {
     this.app.use(express.static('public'))
   }
 }

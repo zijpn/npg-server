@@ -8,7 +8,7 @@
     "docker-build": "VERSION=`node -pe \"require('./package.json').version\"` && npm run build && docker build -t npg-server:${VERSION} .",
     "docker": "VERSION=`node -pe \"require('./package.json').version\"` && docker run --name npg-server --rm -it -p 8080:8080 npg-server:${VERSION}",
     "serve": "node dist",
-    "lint": "tslint -t stylish -c tslint.json -p tsconfig.json",
+    "lint": "tslint -t stylish -c tslint.json -p tsconfig.json --fix",
     "schema": "ajv compile -s schema/schema.json && ajv -s schema/schema.json -d schema/example.json",
     "dep": "npm-check -s",
     "test": "jest --coverage --no-cache",
@@ -33,7 +33,6 @@
     "ts-jest": "^22.4.1",
     "ts-node": "^5.0.1",
     "tslint": "^5.9.1",
-    "tslint-config-standard": "^7.0.0",
     "typescript": "^2.7.2"
   }
 }
