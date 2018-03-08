@@ -9,8 +9,8 @@ case "$1" in
     vagrant up
     docker-machine create -d generic --generic-ssh-user vagrant --generic-ssh-key ~/.vagrant.d/insecure_private_key --generic-ip-address 192.168.99.101 --engine-opt="cluster-store=etcd://192.168.99.101:2379" npg-01
     docker-machine create -d generic --generic-ssh-user vagrant --generic-ssh-key ~/.vagrant.d/insecure_private_key --generic-ip-address 192.168.99.102 --engine-opt="cluster-store=etcd://192.168.99.101:2379" npg-02
-    docker-machine ssh npg-01 sudo calicoctl node run --node-image=quay.io/calico/node:v2.6.8
-    docker-machine ssh npg-02 sudo calicoctl node run --node-image=quay.io/calico/node:v2.6.8
+    docker-machine ssh npg-01 ETCD_ENDPOINTS=http://192.168.99.101:2379 sudo calicoctl node run --node-image=quay.io/calico/node:v2.6.8
+    docker-machine ssh npg-02 ETCD_ENDPOINTS=http://192.168.99.101:2379 sudo calicoctl node run --node-image=quay.io/calico/node:v2.6.8
     ;;
 
   "destroy")
