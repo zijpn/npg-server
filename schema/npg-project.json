@@ -1,41 +1,48 @@
 {
+    "$schema": "./npg-project-schema.json",
     "name": "example",
+    "id": 1,
     "topology": {
         "backends": [
-            "localhost"
+            {
+                "host": "npg-01"
+            },
+            {
+                "host": "npg-02"
+            }
         ],
         "nodes": [
             {
-                "backend": "localhost",
+                "backend": "npg-01",
                 "name": "node1",
-                "image": "base:2.0"
+                "image": "alpine:3.6"
             },
             {
-                "backend": "localhost",
+                "backend": "npg-01",
                 "name": "node2",
-                "image": "base:2.0"
+                "image": "alpine:3.6"
             },
             {
-                "backend": "localhost",
+                "backend": "npg-02",
                 "name": "node3",
-                "image": "base:2.0"
+                "image": "alpine:3.6"
             }
         ],
         "links": [
             {
-                "name": "bridge1",
+                "name": "link1",
                 "nodes": [
                     "node1",
                     "node2"
                 ],
                 "netem": {
                     "node": "node1",
-                    "bw": 500000,
-                    "delay": 100
+                    "bw_down": 1000,
+                    "delay_down": 40
                 }
             },
             {
-                "name": "bridge2",
+                "name": "link2",
                 "nodes": [
                     "node2",
                     "node3"

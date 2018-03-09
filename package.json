@@ -9,7 +9,7 @@
     "docker": "VERSION=`node -pe \"require('./package.json').version\"` && docker run --name npg-server --rm -it -p 8080:8080 npg-server:${VERSION}",
     "serve": "node dist",
     "lint": "tslint -t stylish -c tslint.json -p tsconfig.json --fix",
-    "schema": "ajv compile -s schema/schema.json && ajv -s schema/schema.json -d schema/example.json",
+    "schema": "ajv -s schema/npg-project-schema -d schema/npg-project",
     "dep": "npm-check -s",
     "test": "jest --coverage --no-cache",
     "start": "NODE_ENV=production PORT=8080 npm run serve"
