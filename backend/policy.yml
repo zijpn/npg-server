@@ -1,0 +1,31 @@
+# https://docs.projectcalico.org/v2.6/reference/calicoctl/resources/policy
+- apiVersion: v1
+  kind: policy
+  metadata:
+    name: default
+  spec:
+    order: 1
+    selector: all()
+    ingress:
+    - action: allow
+    egress:
+    - action: allow
+
+# https://docs.projectcalico.org/v2.6/reference/calicoctl/resources/ippool
+- apiVersion: v1
+  kind: ipPool
+  metadata:
+    cidr: 172.19.0.0/16
+  spec:
+    nat-outgoing: true
+
+# https://docs.projectcalico.org/v2.6/reference/calicoctl/resources/hostendpoint
+- apiVersion: v1
+  kind: hostEndpoint
+  metadata:
+    name: enp0s8
+    node: npg-01
+  spec:
+    interfaceName: enp0s8
+    expectedIPs:
+    - 192.168.99.101
