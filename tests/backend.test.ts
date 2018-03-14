@@ -44,6 +44,9 @@ jest.mock('execa', () => ({
     return result
   }),
 }))
+jest.mock('fs', () => ({
+  readFileSync: jest.fn(() => { 'mocked content' }),
+}))
 
 import execa from 'execa'
 import Backend from '../src/backend'
@@ -51,7 +54,7 @@ import Backend from '../src/backend'
 describe('backend', () => {
 
   it('list', () => {
-    expect(Array.isArray(Backend.list())).toBe(true)
+    expect(Backend.list().length).toBe(2)
   })
 
   it('constructor without parameter', () => {

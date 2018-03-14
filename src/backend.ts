@@ -1,19 +1,12 @@
 import Docker from 'dockerode'
 import execa from 'execa'
 import fs from 'fs'
-import shelljs from 'shelljs'
 import { logger } from '../src/logger'
 
 class Backend {
 
   public static list() {
-    let l: string[] = []
-    if (shelljs.which('docker-machine')) {
-      l = execa.sync('docker-machine', ['ls', '-q']).stdout.split('\n').filter((v) => v !== '')
-    } else {
-      logger.error('docker-machine not installed')
-    }
-    return l
+    return execa.sync('docker-machine', ['ls', '-q']).stdout.split('\n').filter((v) => v !== '')
   }
 
   public machine: Array<{
