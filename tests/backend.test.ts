@@ -1,42 +1,49 @@
 // manually call 'mock' before the imports
 import shelljs from 'shelljs'
-if (!shelljs.which('docker-machine')) {
-  jest.mock('execa', () => ({
-    sync: jest.fn((cmd, args, opts) => {
-      const result = {
-        code: 0,
-        stdout: '',
-      }
-      switch (cmd) {
-        case 'docker-machine':
-          if (args) {
-            switch (args[0]) {
-              case 'ls':
-                result.stdout = 'npg-01\nnpg-02'
-                break
-              case 'env':
-                switch (args[1]) {
-                  case '-u':
-                    result.stdout = `unset DOCKER_TLS_VERIFY\n
-                    unset DOCKER_HOST\n
-                    unset DOCKER_CERT_PATH\n
-                    unset DOCKER_MACHINE_NAME`
-                    break
-                  default:
-                    result.stdout = `export DOCKER_TLS_VERIFY="1"\n
-                    export DOCKER_HOST="tcp://192.168.99.101:2376"\n
-                    export DOCKER_CERT_PATH="/Users/zijpn/.docker/machine/machines/${args[1]}"\n
-                    export DOCKER_MACHINE_NAME="${args[1]}"`
-                }
-                break
-            }
+jest.mock('execa', () => ({
+  sync: jest.fn((cmd, args, opts) => {
+    const result = {
+      code: 0,
+      stdout: '',
+    }
+    switch (cmd) {
+      case 'docker-machine':
+        if (args) {
+          switch (args[0]) {
+            case 'ls':
+              result.stdout = 'npg-01\nnpg-02'
+              break
+            case 'status':
+              result.stdout = 'Running'
+              break
+            case 'env':
+              switch (args[1]) {
+                case '-u':
+                  result.stdout = `unset DOCKER_TLS_VERIFY\n
+                  unset DOCKER_HOST\n
+                  unset DOCKER_CERT_PATH\n
+                  unset DOCKER_MACHINE_NAME`
+                  break
+                case 'npg-01':
+                  result.stdout = `export DOCKER_TLS_VERIFY="1"\n
+                  export DOCKER_HOST="tcp://192.168.99.101:2376"\n
+                  export DOCKER_CERT_PATH="/Users/zijpn/.docker/machine/machines/${args[1]}"\n
+                  export DOCKER_MACHINE_NAME="${args[1]}"`
+                  break
+                case 'npg-02':
+                  result.stdout = `export DOCKER_TLS_VERIFY="1"\n
+                  export DOCKER_HOST="tcp://192.168.99.102:2376"\n
+                  export DOCKER_CERT_PATH="/Users/zijpn/.docker/machine/machines/${args[1]}"\n
+                  export DOCKER_MACHINE_NAME="${args[1]}"`
+              }
+              break
           }
-          break
-      }
-      return result
-    }),
-  }))
-}
+        }
+        break
+    }
+    return result
+  }),
+}))
 
 import execa from 'execa'
 import Backend from '../src/backend'
@@ -69,6 +76,12 @@ describe('backend', () => {
         expect(info.Name).toBe(backend.machine[idx].name)
       }
     }))
+  })
+
+  it('status', () => {
+    const backend = new Backend()
+    const status = backend.status()
+    expect(status.length).toBe(2)
   })
 
 })

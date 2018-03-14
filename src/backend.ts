@@ -47,6 +47,15 @@ class Backend {
     })
   }
 
+  public status(): string[] {
+    const s: string[] = []
+    for (const m of this.machine) {
+      const status = execa.sync('docker-machine', ['status', m.name]).stdout
+      s.push(`${m.name} ${m.host} ${status}`)
+    }
+    return s
+  }
+
 }
 
 export default Backend
