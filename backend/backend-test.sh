@@ -2,14 +2,6 @@
 
 function create_docker_machine
 {
-  PUBLIC_KEY="$HOME/.vagrant.d/insecure_private_key.pub"
-  PRIVATE_KEY="$HOME/.vagrant.d/insecure_private_key"
-  VAGRANT_INSECURE_PUBLIC_KEY_URL="https://raw.githubusercontent.com/hashicorp/vagrant/master/keys/vagrant.pub"
-
-  if [ ! -e ${PUBLIC_KEY} ]; then
-    curl --silent ${VAGRANT_INSECURE_PUBLIC_KEY_URL} -o ${PUBLIC_KEY}
-  fi
-
   # engine options can still be changed on the machine itself:
   #   sudo vim /etc/systemd/system/docker.service.d/10-machine.conf
   #   sudo systemctl daemon-reload
@@ -17,13 +9,15 @@ function create_docker_machine
   docker-machine create -d generic \
     --generic-ip-address ${1} \
     --generic-ssh-user vagrant \
-    --generic-ssh-key ${PRIVATE_KEY} \
+    --generic-ssh-key keys/npg \
     --engine-opt="iptables=false"\
     ${2}
 
   docker-machine ssh ${2} sudo usermod -aG docker vagrant
   docker-machine ssh ${2} sudo iptables -F
   docker-machine ssh ${2} sudo iptables -P FORWARD ACCEPT
+
+  machine-export ${2}
 }
 
 function create_docker_swarm
@@ -53,6 +47,8 @@ case "$1" in
     vagrant plugin install vagrant-vbguest
     vagrant box update
     vagrant up
+
+    npm install -g machine-share
 
     create_docker_machine 192.168.99.101 npg-01
     create_docker_machine 192.168.99.102 npg-02
