@@ -11,7 +11,7 @@
     "lint": "tslint -t stylish -c tslint.json -p tsconfig.json --fix",
     "schema": "ajv -s schema/npg-project-schema -d schema/npg-project",
     "dep": "npm-check -s",
-    "test": "jest --coverage --no-cache",
+    "test": "jest --coverage --no-cache --verbose",
     "start": "NODE_ENV=production PORT=8080 npm run serve"
   },
   "dependencies": {
@@ -19,7 +19,6 @@
     "dockerode": "^2.5.4",
     "execa": "^0.9.0",
     "express": "^4.16.3",
-    "shelljs": "^0.8.1",
     "winston": "^2.4.1"
   },
   "devDependencies": {

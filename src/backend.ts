@@ -3,9 +3,10 @@ import execa from 'execa'
 import fs from 'fs'
 import { logger } from '../src/logger'
 
-class Backend {
+export class Backend {
 
   public static list() {
+    logger.debug('docker-machine ls -q')
     return execa.sync('docker-machine', ['ls', '-q']).stdout.split('\n').filter((v) => v !== '')
   }
 
@@ -18,24 +19,29 @@ class Backend {
   constructor(list: string[] = Backend.list()) {
     this.machine = []
     list.forEach((name) => {
-      const env = execa.sync('docker-machine', ['env', name]).stdout
-      const dockerHost = env.match(/DOCKER_HOST="tcp:\/\/[0-9]*.[0-9]*.[0-9]*.[0-9]*:[0-9]*"/)
-      const dockerCertPath = env.match(/DOCKER_CERT_PATH="[a-zA-Z/.0-9-]*"/)
-      if (dockerHost && dockerCertPath) {
-        const hostPort = dockerHost[0].split('"')[1].split(':')
-        const certPath = dockerCertPath[0].split('"')[1]
-        const host = hostPort[1].replace(/\//g, '')
-        this.machine.push({
-          docker: new Docker({
-            ca: fs.readFileSync(certPath + '/ca.pem'),
-            cert: fs.readFileSync(certPath + '/cert.pem'),
+      try {
+        logger.debug(`docker-machine env ${name}`)
+        const env = execa.sync('docker-machine', ['env', name]).stdout
+        const dockerHost = env.match(/DOCKER_HOST="tcp:\/\/[0-9]*.[0-9]*.[0-9]*.[0-9]*:[0-9]*"/)
+        const dockerCertPath = env.match(/DOCKER_CERT_PATH="[a-zA-Z/.0-9-]*"/)
+        if (dockerHost && dockerCertPath) {
+          const hostPort = dockerHost[0].split('"')[1].split(':')
+          const certPath = dockerCertPath[0].split('"')[1]
+          const host = hostPort[1].replace(/\//g, '')
+          this.machine.push({
+            docker: new Docker({
+              ca: fs.readFileSync(certPath + '/ca.pem'),
+              cert: fs.readFileSync(certPath + '/cert.pem'),
+              host,
+              key: fs.readFileSync(certPath + '/key.pem'),
+              port: parseInt(hostPort[2], 10),
+            }),
             host,
-            key: fs.readFileSync(certPath + '/key.pem'),
-            port: parseInt(hostPort[2], 10),
-          }),
-          host,
-          name,
-        })
+            name,
+          })
+        }
+      } catch (err) {
+        logger.error(err)
       }
     })
   }
@@ -43,6 +49,7 @@ class Backend {
   public status(): string[] {
     const s: string[] = []
     for (const m of this.machine) {
+      logger.debug(`docker-machine status ${m.name}`)
       const status = execa.sync('docker-machine', ['status', m.name]).stdout
       s.push(`${m.name} ${m.host} ${status}`)
     }
@@ -51,4 +58,4 @@ class Backend {
 
 }
 
-export default Backend
+export const backend = new Backend()
