@@ -26,5 +26,6 @@ RUN curl -L --silent https://github.com/docker/machine/releases/download/v0.14.0
  && machine-import npg-02.zip \
  && find ~/.docker -name npg | xargs chmod 600
 
+ENV SHELL /bin/bash
 EXPOSE 8080
 CMD ["npm", "start"]
