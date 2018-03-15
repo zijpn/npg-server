@@ -1,35 +1,5 @@
 #!/bin/bash
 
-DOCKER_VERSION="17.12.0"
-
-function create_docker_machine
-{
-  # engine options can still be changed on the machine itself:
-  #   sudo vim /etc/systemd/system/docker.service.d/10-machine.conf
-  #   sudo systemctl daemon-reload
-  #   sudo systemctl restart docker.service
-  docker-machine create -d generic \
-    --generic-ip-address ${1} \
-    --generic-ssh-user vagrant \
-    --generic-ssh-key keys/npg \
-    --engine-install-url="https://releases.rancher.com/install-docker/${DOCKER_VERSION}.sh" \
-    --engine-opt="iptables=false" \
-    ${2}
-
-  docker-machine ssh ${2} sudo usermod -aG docker vagrant
-  docker-machine ssh ${2} sudo iptables -F
-  docker-machine ssh ${2} sudo iptables -P FORWARD ACCEPT
-
-  machine-export ${2}
-}
-
-function create_docker_swarm
-{
-  docker-machine ssh npg-01 docker swarm init --advertise-addr 192.168.99.101
-  TOKEN=`docker-machine ssh npg-01 docker swarm join-token worker -q`
-  docker-machine ssh npg-02 docker swarm join --token ${TOKEN} 192.168.99.101:2377
-}
-
 function get_test_configuration
 {
   eval $(docker-machine env npg-01)
@@ -46,29 +16,8 @@ function get_test_configuration
 }
 
 case "$1" in
+
   "create")
-    vagrant plugin install vagrant-vbguest
-    vagrant box update
-    vagrant up
-
-    npm install -g machine-share
-
-    create_docker_machine 192.168.99.101 npg-01
-    create_docker_machine 192.168.99.102 npg-02
-
-    create_docker_swarm
-    ;;
-
-  "destroy")
-    docker-machine rm -y npg-01 npg-02 2>/dev/null
-    vagrant destroy -f
-    ;;
-
-  "status")
-    docker-machine ls
-    ;;
-
-  "test-create")
     echo "List swarm nodes"
     docker-machine ssh npg-01 docker node ls
     echo
@@ -103,7 +52,7 @@ case "$1" in
     echo
     ;;
 
-  "test-show")
+  "show")
     get_test_configuration
     echo
     echo "net1: $SUBNET1"
@@ -116,7 +65,7 @@ case "$1" in
     echo
     ;;
 
-  "test-ping")
+  "ping")
     get_test_configuration
     docker-machine ssh npg-01 docker exec n1 ping -c 3 $IPs
     docker-machine ssh npg-01 docker exec n1 ping -c 3 $IP2
@@ -128,7 +77,7 @@ case "$1" in
     docker-machine ssh npg-02 docker exec n2 ping -c 3 $IP1
     ;;
   
-  "test-destroy")
+  "destroy")
     echo
     echo "Remove service"
     docker-machine ssh npg-01 docker service rm s1
@@ -154,6 +103,7 @@ case "$1" in
     ;;
 
   *)
-    echo "usage: $0 [ create | destroy | status ]"
+    echo "usage: $0 [ create | show | ping | destroy ]"
     ;;
+
 esac
