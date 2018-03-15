@@ -1,5 +1,7 @@
 #!/bin/bash
 
+DOCKER_VERSION="17.12.0"
+
 function create_docker_machine
 {
   # engine options can still be changed on the machine itself:
@@ -10,7 +12,8 @@ function create_docker_machine
     --generic-ip-address ${1} \
     --generic-ssh-user vagrant \
     --generic-ssh-key keys/npg \
-    --engine-opt="iptables=false"\
+    --engine-install-url="https://releases.rancher.com/install-docker/${DOCKER_VERSION}.sh" \
+    --engine-opt="iptables=false" \
     ${2}
 
   docker-machine ssh ${2} sudo usermod -aG docker vagrant
