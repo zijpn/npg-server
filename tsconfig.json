@@ -6,12 +6,10 @@
     "moduleResolution": "node",
     "pretty": true,
     "outDir": "dist",
-    "baseUrl": "src",
     "strict": true
   },
   "include": [
-    "src/**/*.ts",
-    "tests/**/*.ts"
+    "src/**/*.ts"
   ],
   "exclude": [
     "node_modules"

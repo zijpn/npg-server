@@ -1,7 +1,7 @@
 import Docker from 'dockerode'
 import execa from 'execa'
 import fs from 'fs'
-import { logger } from '../src/logger'
+import { logger } from './logger'
 
 export class Backend {
 
