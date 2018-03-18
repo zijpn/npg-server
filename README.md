@@ -10,15 +10,10 @@
 
 The [API] is based on the OpenAPI specification ([OAS]).
 
-## Backend
-
-Uses [calico] with docker. Calico implements a Docker network plugin that provides routing and network policy for Docker containers.
-
 ## Projects
 
 Projects are stored as JSON files and validated by a [schema].
 
 [API]: https://app.swaggerhub.com/apis/npg/server/1.0.0
 [OAS]: https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md
-[calico]: https://docs.projectcalico.org/v2.6/getting-started/docker/
 [schema]: https://spacetelescope.github.io/understanding-json-schema/
