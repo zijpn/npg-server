@@ -1,6 +1,11 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+$script = <<SCRIPT
+echo ifb numifbs=1 >> /etc/modules
+modprobe ifb numifbs=1
+SCRIPT
+
 Vagrant.configure("2") do |config|
 
   config.ssh.insert_key = false
@@ -12,7 +17,9 @@ Vagrant.configure("2") do |config|
   config.vm.provider "virtualbox" do |vb|
     vb.customize [ "modifyvm", :id, "--uartmode1", "disconnected" ]
   end
-  
+
+  config.vm.provision :shell, inline: $script
+
   (1..2).each do |i|
     name = "npg-%02d" % i
     ip = "192.168.99.#{100+i}"
