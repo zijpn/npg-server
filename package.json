@@ -2,7 +2,7 @@
   "name": "npg-server",
   "version": "0.1.0",
   "private": true,
-  "description": "Network PlayGround Server",
+  "description": "Network PlayGround",
   "scripts": {
     "build": "tsc",
     "docker-build": "VERSION=`node -pe \"require('./package.json').version\"` && npm run build && docker build -t npg-server:${VERSION} .",

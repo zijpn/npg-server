@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DOCKER_VERSION="17.12.1"
+DOCKER_VERSION="17.12"
 
 function create_machine
 {
@@ -8,6 +8,8 @@ function create_machine
   #   sudo vim /etc/systemd/system/docker.service.d/10-machine.conf
   #   sudo systemctl daemon-reload
   #   sudo systemctl restart docker.service
+  # docker versions
+  #   https://github.com/rancher/install-docker
   docker-machine create -d generic \
     --generic-ip-address ${1} \
     --generic-ssh-user vagrant \
