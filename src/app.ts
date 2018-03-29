@@ -3,7 +3,7 @@ import { createServer, Server } from 'http'
 import path from 'path'
 import socketIo from 'socket.io'
 import { Api } from './api'
-import { logger } from './logger'
+import { logger, MemLogger } from './logger'
 
 export class App {
   public app: express.Application
@@ -35,11 +35,20 @@ export class App {
       logger.info(`Server listening on port ${this.port}`)
     })
     this.io.sockets.on('connect', (socket) => {
-      logger.info('Socket connected')
+      logger.info('Client connected')
+
+      const memLogger = logger.transports.mem as MemLogger
+      socket.emit('log', memLogger.archive)
+      memLogger.on('log', (log) => {
+        socket.emit('log', [log])
+      })
+
       const api = new Api(socket)
       api.dispatch()
+
       socket.on('disconnect', () => {
-        logger.info('Socket disconnected')
+        logger.info('Client disconnect')
+        memLogger.removeAllListeners('log')
       })
     })
   }
