@@ -6,8 +6,8 @@ import { logger } from './logger'
 export class Backend {
 
   public static list() {
-    logger.debug('docker-machine ls -q')
-    return execa.sync('docker-machine', ['ls', '-q']).stdout.split('\n').filter((v) => v !== '')
+    logger.debug('docker-machine ls -q -t 1')
+    return execa.sync('docker-machine', ['ls', '-q', '-t', '1']).stdout.split('\n').filter((v) => v !== '')
   }
 
   public machine: Array<{
