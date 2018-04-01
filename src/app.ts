@@ -17,7 +17,7 @@ export class App {
     this.io = socketIo(this.server, {
       path: '/api',
     })
-    this.port = process.env.PORT || 3000
+    this.port = process.env.PORT || 8080
     this.config()
     this.listen()
   }
