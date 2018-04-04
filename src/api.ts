@@ -1,18 +1,51 @@
 import socketIo from 'socket.io'
-import { logger } from './logger'
+import { logger, MemLogger } from './logger'
+import { Term } from './term'
 
 export class Api {
-  private socket: socketIo.Socket
 
-  constructor(socket: socketIo.Socket) {
-    this.socket = socket
-  }
+  public dispatch(io: socketIo.Server): void {
+    const ioLog = io.of('/log')
+    ioLog.on('connection', (socket) => {
+      const memLogger = logger.transports.mem as MemLogger
+      socket.emit('log', memLogger.archive)
+      memLogger.on('log', (log) => {
+        socket.emit('log', [log])
+      })
+      socket.on('disconnect', () => {
+        memLogger.removeAllListeners('log')
+      })
+    })
 
-  public dispatch(): void {
-    this.socket.on('version', () => {
+    const ioServer = io.of('/server')
+    ioServer.on('connection', (socket) => {
       logger.debug('GET version')
       const version = require('../package.json').version
-      this.socket.emit('version', version)
+      socket.emit('version', version)
     })
+
+    const ioTerm = io.of('/term')
+    ioTerm.on('connection', (socket) => {
+      const term = new Term(socket)
+      socket.on('create', (msg) => {
+        let args: string[] = []
+        if (msg.container) {
+          args = ['-c', `docker exec -it ${msg.container} /usr/bin/env TERM=$TERM /bin/bash`]
+        } else if (process.env.DOCKER_MACHINE_NAME) {
+          args = ['-c', `docker-machine ssh ${process.env.DOCKER_MACHINE_NAME}`]
+        }
+        term.create(msg.cols, msg.rows, args, msg.container)
+      })
+      socket.on('data', (msg) => {
+        term.write(msg.id, msg.data)
+      })
+      socket.on('kill', (msg) => {
+        term.destroy(msg.id)
+      })
+      socket.on('resize', (msg) => {
+        term.resize(msg.id, msg.cols, msg.rows)
+      })
+    })
+
   }
 }
