@@ -25,20 +25,7 @@ export class Backend {
         const dockerHost = env.match(/DOCKER_HOST="tcp:\/\/[0-9]*.[0-9]*.[0-9]*.[0-9]*:[0-9]*"/)
         const dockerCertPath = env.match(/DOCKER_CERT_PATH="[a-zA-Z/.0-9-]*"/)
         if (dockerHost && dockerCertPath) {
-          const hostPort = dockerHost[0].split('"')[1].split(':')
-          const certPath = dockerCertPath[0].split('"')[1]
-          const host = hostPort[1].replace(/\//g, '')
-          this.machine.push({
-            docker: new Docker({
-              ca: fs.readFileSync(certPath + '/ca.pem'),
-              cert: fs.readFileSync(certPath + '/cert.pem'),
-              host,
-              key: fs.readFileSync(certPath + '/key.pem'),
-              port: parseInt(hostPort[2], 10),
-            }),
-            host,
-            name,
-          })
+          this.addMachine(name, dockerHost[0], dockerCertPath[0])
         }
       } catch (err) {
         logger.error(err)
@@ -54,6 +41,23 @@ export class Backend {
       s.push(`${m.name} ${m.host} ${status}`)
     }
     return s
+  }
+
+  private addMachine(name: string, dockerHost: string, dockerCertPath: string) {
+    const hostPort = dockerHost.split('"')[1].split(':')
+    const certPath = dockerCertPath.split('"')[1]
+    const host = hostPort[1].replace(/\//g, '')
+    this.machine.push({
+      docker: new Docker({
+        ca: fs.readFileSync(certPath + '/ca.pem'),
+        cert: fs.readFileSync(certPath + '/cert.pem'),
+        host,
+        key: fs.readFileSync(certPath + '/key.pem'),
+        port: parseInt(hostPort[2], 10),
+      }),
+      host,
+      name,
+    })
   }
 
 }
