@@ -1,4 +1,4 @@
-import pty from 'node-pty'
+import { spawn } from 'node-pty'
 import { ITerminal } from 'node-pty/lib/interfaces'
 import socketIo from 'socket.io'
 import { logger } from './logger'
@@ -14,7 +14,7 @@ export class Term {
 
   public create(cols: number, rows: number, args: string[], container: string) {
     const proc = process.env.SHELL
-    const term = pty.spawn(proc, args || [], {
+    const term = spawn(proc, args || [], {
       cols: cols || 80,
       cwd: process.env.HOME,
       name: 'xterm',
@@ -30,7 +30,7 @@ export class Term {
     })
     term.on('close', () => {
       // Make sure it closes on the client side
-      this.socket.emit('kill', { id })
+      this.socket.emit('close', { id })
       // Ensure removal
       Reflect.deleteProperty(this.terms, id)
       logger.info('Closed term %s', id)

@@ -36,11 +36,11 @@ export class Api {
         }
         term.create(msg.cols, msg.rows, args, msg.container)
       })
+      socket.on('destroy', (msg) => {
+        term.destroy(msg.id)
+      })
       socket.on('data', (msg) => {
         term.write(msg.id, msg.data)
-      })
-      socket.on('kill', (msg) => {
-        term.destroy(msg.id)
       })
       socket.on('resize', (msg) => {
         term.resize(msg.id, msg.cols, msg.rows)

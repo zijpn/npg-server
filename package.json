@@ -32,6 +32,7 @@
     "@types/jest": "^22.2.3",
     "@types/node": "^10.1.2",
     "@types/socket.io": "^1.4.33",
+    "@types/socket.io-client": "^1.4.32",
     "@types/std-mocks": "^1.0.0",
     "@types/winston": "^2.3.9",
     "ajv-cli": "^3.0.0",

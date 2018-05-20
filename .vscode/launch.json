@@ -13,6 +13,14 @@
             "cwd": "${workspaceRoot}",
             "protocol": "inspector",
             "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch jest",
+            "program": "${workspaceRoot}/node_modules/jest/bin/jest.js",
+            "args": ["-i"],
+            "internalConsoleOptions": "openOnSessionStart"
         }
     ]
 }
