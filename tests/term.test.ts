@@ -49,14 +49,14 @@ describe('term', () => {
     let id = null
     const term = new Term(serverSocket)
     clientSocket.on('created', (data) => {
-      expect(data.container).toBeNull()
+      expect(data.container).toEqual('')
       expect(data.id).toEqual(id)
       expect(data.process).toEqual(process.env.SHELL)
       term.destroy(data.id)
       expect(term.terms).toEqual({})
       done()
     })
-    term.create(80, 25, [], '')
+    term.create()
     id = Number(Object.keys(term.terms)[0])
   })
 })

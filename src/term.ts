@@ -12,13 +12,13 @@ export class Term {
     this.terms = {}
   }
 
-  public create(cols: number, rows: number, args: string[], container: string) {
+  public create(cols: number = 80, rows: number = 24, args: string[] = [], container: string = '') {
     const proc = process.env.SHELL
-    const term = spawn(proc, args || [], {
-      cols: cols || 80,
+    const term = spawn(proc, args, {
+      cols,
       cwd: process.env.HOME,
       name: 'xterm',
-      rows: rows || 24,
+      rows,
     })
     const id = term.pid
     this.terms[id] = term
@@ -37,7 +37,7 @@ export class Term {
     })
     logger.info('Created term %s', id)
     this.socket.emit('created', {
-      container: container || null,
+      container,
       id,
       process: proc,
     })
