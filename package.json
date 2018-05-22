@@ -5,7 +5,7 @@
   "description": "Network PlayGround",
   "scripts": {
     "build": "npm rebuild node-pty && tsc",
-    "docker-build": "VERSION=`node -pe \"require('./package.json').version\"` && npm run build && docker build -t npg-server:${VERSION} .",
+    "build:docker": "VERSION=`node -pe \"require('./package.json').version\"` && npm run build && docker build -t npg-server:${VERSION} .",
     "docker": "VERSION=`node -pe \"require('./package.json').version\"` && docker run --name npg-server --rm -it -p 8080:8080 npg-server:${VERSION}",
     "electron": "npm run build && electron-rebuild -f -w node-pty && electron dist/main.js",
     "serve": "npm rebuild node-pty && PORT=3000 ts-node src",
