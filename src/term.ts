@@ -16,7 +16,7 @@ export class Term {
     const term = spawn(process.env.SHELL, args, {
       cols,
       cwd: process.env.HOME,
-      name: 'xterm',
+      name: 'vt100', // 'xterm',
       rows,
     })
     const id = term.pid
