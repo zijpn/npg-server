@@ -47,6 +47,6 @@ describe('logger', () => {
     log.logger.info('testje')
     stdMocks.restore()
     const output = stdMocks.flush()
-    expect(output.stdout[0]).toMatch(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/)
+    expect(output.stdout[0]).toMatch(/\d{4}-\d*-\d* \d{2}:\d{2}:\d{2}/)
   })
 })

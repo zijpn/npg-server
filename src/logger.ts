@@ -1,4 +1,3 @@
-import dateFormat from 'dateformat'
 import { LogCallback, Logger, LoggerInstance, Transport, TransportInstance, transports } from 'winston'
 
 export const maxlog = 500
@@ -40,7 +39,7 @@ const tp: TransportInstance[] = [
 if (process.env.NODE_ENV !== 'test') {
   tp.push(new transports.Console({
     colorize: true,
-    timestamp: () => dateFormat(Date.now(), 'isoUtcDateTime'),
+    timestamp: () => new Date().toLocaleString(),
   }))
 }
 
