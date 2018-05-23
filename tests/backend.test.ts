@@ -2,6 +2,28 @@ import execa from 'execa'
 import { Backend } from '../src/backend'
 
 jest.mock('fs')
+jest.mock('execa', () => {
+  return jest.fn().mockImplementation((cmd, args, opts) => {
+    return new Promise((resolve) => {
+      const result = {
+        code: 0,
+        stdout: '',
+      }
+      switch (cmd) {
+        case 'docker-machine':
+          if (args) {
+            switch (args[0]) {
+              case 'status':
+                result.stdout = 'Running'
+                break
+            }
+          }
+          break
+      }
+      resolve(result)
+    })
+  })
+})
 execa.sync = jest.fn((cmd, args, opts) => {
   const result = {
     code: 0,
@@ -14,29 +36,18 @@ execa.sync = jest.fn((cmd, args, opts) => {
           case 'ls':
             result.stdout = 'npg-01\nnpg-02'
             break
-          case 'status':
-            result.stdout = 'Running'
-            break
-          case 'env':
-            switch (args[1]) {
-              case '-u':
-                result.stdout = `unset DOCKER_TLS_VERIFY\n
-                unset DOCKER_HOST\n
-                unset DOCKER_CERT_PATH\n
-                unset DOCKER_MACHINE_NAME`
-                break
-              case 'npg-01':
-                result.stdout = `export DOCKER_TLS_VERIFY="1"\n
-                export DOCKER_HOST="tcp://192.168.99.101:2376"\n
-                export DOCKER_CERT_PATH="/Users/zijpn/.docker/machine/machines/${args[1]}"\n
-                export DOCKER_MACHINE_NAME="${args[1]}"`
-                break
-              case 'npg-02':
-                result.stdout = `export DOCKER_TLS_VERIFY="1"\n
-                export DOCKER_HOST="tcp://192.168.99.102:2376"\n
-                export DOCKER_CERT_PATH="/Users/zijpn/.docker/machine/machines/${args[1]}"\n
-                export DOCKER_MACHINE_NAME="${args[1]}"`
-            }
+          case 'inspect':
+            result.stdout = `{
+              "Driver": {
+                  "IPAddress": "192.168.99.x",
+                  "EnginePort": 2376
+              },
+              "HostOptions": {
+                  "AuthOptions": {
+                      "StorePath": "/Users/zijpn/.docker/machine/machines/${args[1]}"
+                  }
+              }
+            }`
             break
         }
       }
@@ -53,15 +64,16 @@ describe('backend', () => {
 
   it('constructor without parameter', () => {
     const backend = new Backend()
-    expect(Array.isArray(backend.machine)).toBe(true)
+    expect(backend.machine.length).toBe(2)
     backend.machine.forEach((m, idx) => {
       expect(m.host).toMatch(/[0-9]*.[0-9]*.[0-9]*.[0-9]*/)
       expect(m.name).toMatch(Backend.list()[idx])
+      expect(m.status).toEqual('unknown')
     })
   })
 
   it('constructor with parameter', () => {
-    const backend = new Backend(['-u'])
+    const backend = new Backend([])
     expect(backend.machine).toHaveLength(0)
   })
 
@@ -75,10 +87,13 @@ describe('backend', () => {
     }))
   })
 
-  it('status', () => {
+  it('status', (done) => {
     const backend = new Backend()
-    const status = backend.status()
-    expect(status.length).toBe(2)
+    backend.status().then((status) => {
+      expect(backend.machine[0].status).toBe('Running')
+      expect(backend.machine[1].status).toBe('Running')
+      done()
+    })
   })
 
   it('error', () => {
