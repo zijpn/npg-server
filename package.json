@@ -34,7 +34,7 @@
     "@types/std-mocks": "^1.0.0",
     "@types/winston": "^2.3.9",
     "ajv-cli": "^3.0.0",
-    "electron": "^2.0.1",
+    "electron": "^2.0.2",
     "electron-rebuild": "^1.7.3",
     "jest": "^22.4.4",
     "mock-socket": "^7.1.0",
