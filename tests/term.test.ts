@@ -78,7 +78,7 @@ describe('term', () => {
       const l = res.split('\r\n')
       expect(l[0]).toEqual('pwd')
       if (!isTravis) {
-        expect(l[2]).toEqual(process.env.HOME)
+        expect(l[l.length - 2]).toEqual(process.env.HOME)
       }
       term.destroy(id)
       done()
@@ -103,7 +103,7 @@ describe('term', () => {
       const l = res.split('\r\n')
       const r = l[1].split('\r')
       if (!isTravis) {
-        expect(r[0].length).toBe(linesize + 1)
+        expect(r.length).toEqual(2)
       }
       term.destroy(id)
       done()
