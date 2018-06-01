@@ -3,14 +3,25 @@ import execa from 'execa'
 import fs from 'fs'
 import { logger } from './logger'
 
+process.env.PATH = [
+  '/usr/local/bin',
+  process.env.PATH,
+].join(':')
+
 export class Backend {
 
-  public static list() {
-    logger.debug('docker-machine ls -q')
-    return execa.sync('docker-machine', ['ls', '-q']).stdout.split('\n').filter((v) => v !== '')
+  private static list() {
+    let list: string[] = []
+    try {
+      logger.debug('docker-machine ls -q')
+      list = execa.sync('docker-machine', ['ls', '-q']).stdout.split('\n').filter((v) => v !== '')
+    } catch (err) {
+      logger.error('docker-machine not installed')
+    }
+    return list
   }
 
-  public machine: Array<{
+  private machine: Array<{
     docker: Docker,
     host: string,
     name: string,
