@@ -10,7 +10,7 @@ process.env.PATH = [
 
 export class Backend {
 
-  private static list() {
+  public static list() {
     let list: string[] = []
     try {
       logger.debug('docker-machine ls -q')
@@ -21,7 +21,7 @@ export class Backend {
     return list
   }
 
-  private machine: Array<{
+  public machine: Array<{
     docker: Docker,
     host: string,
     name: string,
@@ -68,3 +68,5 @@ export class Backend {
     return Promise.all(p)
   }
 }
+
+export const backend = new Backend()

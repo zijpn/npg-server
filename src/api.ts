@@ -1,4 +1,5 @@
 import socketIo from 'socket.io'
+import { backend } from './backend'
 import { logger, MemLogger } from './logger'
 import { Term } from './term'
 
@@ -49,8 +50,18 @@ export class Api {
   }
 
   private serverHandler(socket: socketIo.Socket) {
-    logger.debug('GET version')
-    const version = require('../package.json').version
-    socket.emit('version', version)
+    socket.on('version', () => {
+      const version = require('../package.json').version
+      socket.emit('version', version)
+    })
+    socket.on('backend', () => {
+      backend.status().then((status) => {
+        const res = Object.assign({}, status)
+        for (const m of res) {
+          delete m.docker
+        }
+        socket.emit('backend', status)
+      })
+    })
   }
 }
