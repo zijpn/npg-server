@@ -60,7 +60,7 @@ export class Api {
         for (const m of res) {
           delete m.docker
         }
-        socket.emit('backend', status)
+        socket.emit('backend', res)
       })
     })
   }
