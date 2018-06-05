@@ -3,6 +3,25 @@ import { backend } from './backend'
 import { logger, MemLogger } from './logger'
 import { Term } from './term'
 
+const pollBackend = (socket: socketIo.Socket) => {
+  backend.status().then((status) => {
+    status.forEach((_, idx) => {
+      if (status[idx].status !== status[idx].previous) {
+        logger.info(`Backend ${status[idx].name} ${status[idx].host} ${status[idx].status}`)
+        const res = status.map((obj) => {
+          return {
+            host: obj.host,
+            name: obj.name,
+            status: obj.status,
+          }
+        })
+        socket.emit('backend', res)
+      }
+    })
+    setTimeout(pollBackend, 1000, socket)
+  })
+}
+
 export class Api {
 
   public dispatch(io: socketIo.Server): void {
@@ -50,21 +69,8 @@ export class Api {
   }
 
   private serverHandler(socket: socketIo.Socket) {
-    socket.on('version', () => {
-      const version = require('../package.json').version
-      socket.emit('version', version)
-    })
-    socket.on('backend', () => {
-      backend.status().then((status) => {
-        const res = status.map((obj) => {
-          return {
-            host: obj.host,
-            name: obj.name,
-            status: obj.status,
-          }
-        })
-        socket.emit('backend', res)
-      })
-    })
+    const version = require('../package.json').version
+    socket.emit('version', version)
+    pollBackend(socket)
   }
 }

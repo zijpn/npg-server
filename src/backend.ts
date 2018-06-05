@@ -25,7 +25,8 @@ export class Backend {
     docker: Docker,
     host: string,
     name: string,
-    status: string,
+    previous: string, // previous status
+    status: string,   // current status
   }>
 
   constructor(list: string[] = Backend.list()) {
@@ -49,6 +50,7 @@ export class Backend {
           }),
           host,
           name,
+          previous: 'unknown',
           status: 'unknown',
         })
       } catch (err) {
@@ -59,8 +61,9 @@ export class Backend {
 
   public status() {
     const p = this.machine.map((m) => {
-      logger.debug(`docker-machine status ${m.name}`)
+      // logger.debug(`docker-machine status ${m.name}`)
       return execa('docker-machine', ['status', m.name]).then((r) => {
+        m.previous = m.status
         m.status = r.stdout
         return m
       })
