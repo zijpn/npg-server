@@ -56,10 +56,13 @@ export class Api {
     })
     socket.on('backend', () => {
       backend.status().then((status) => {
-        const res = Object.assign({}, status)
-        for (const m of res) {
-          delete m.docker
-        }
+        const res = status.map((obj) => {
+          return {
+            host: obj.host,
+            name: obj.name,
+            status: obj.status,
+          }
+        })
         socket.emit('backend', res)
       })
     })
