@@ -3,26 +3,9 @@ import { backend } from './backend'
 import { logger, MemLogger } from './logger'
 import { Term } from './term'
 
-const pollBackend = (socket: socketIo.Socket) => {
-  backend.status().then((status) => {
-    status.forEach((_, idx) => {
-      if (status[idx].status !== status[idx].previous) {
-        logger.info(`Backend ${status[idx].name} ${status[idx].host} ${status[idx].status}`)
-        const res = status.map((obj) => {
-          return {
-            host: obj.host,
-            name: obj.name,
-            status: obj.status,
-          }
-        })
-        socket.emit('backend', res)
-      }
-    })
-    setTimeout(pollBackend, 1000, socket)
-  })
-}
-
 export class Api {
+
+  private pollTimeout: number = 0
 
   public dispatch(io: socketIo.Server): void {
     const ioLog = io.of('/log')
@@ -69,8 +52,41 @@ export class Api {
   }
 
   private serverHandler(socket: socketIo.Socket) {
-    const version = require('../package.json').version
-    socket.emit('version', version)
-    pollBackend(socket)
+    socket.on('version', () => {
+      const version = require('../package.json').version
+      socket.emit('version', version)
+    })
+    socket.on('backend', () => {
+      // start backend poll
+      this.pollTimeout = 0
+      this.pollBackend(socket)
+    })
+    socket.on('disconnect', () => {
+      // cancel backend poll
+      if (this.pollTimeout !== 0) {
+        clearTimeout(this.pollTimeout)
+      }
+    })
+  }
+
+  private pollBackend(socket: socketIo.Socket) {
+    backend.status().then((status) => {
+      status.forEach((_, idx) => {
+        // send to client when different or when client has just (re-)connected
+        if (status[idx].status !== status[idx].previous || this.pollTimeout === 0) {
+          logger.info(`Backend ${status[idx].name} ${status[idx].host} ${status[idx].status}`)
+          const res = status.map((obj) => {
+            return {
+              host: obj.host,
+              name: obj.name,
+              status: obj.status,
+            }
+          })
+          socket.emit('backend', res)
+        }
+      })
+      // https://stackoverflow.com/questions/5911211/settimeout-inside-javascript-class-using-this
+      this.pollTimeout = setTimeout(this.pollBackend.bind(this), 1000, socket)
+    })
   }
 }
