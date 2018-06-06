@@ -12,7 +12,13 @@ export class Term {
     this.terms = {}
   }
 
-  public create(cols: number = 80, rows: number = 24, args: string[] = [], container: string = '') {
+  public create(cols: number = 80, rows: number = 24, backend: string = '', container: string = '') {
+    let args: string[] = []
+    if (container) {
+      args = ['-c', `docker exec -it ${container} /usr/bin/env TERM=$TERM /bin/bash`]
+    } else if (backend) {
+      args = ['-c', `docker-machine ssh ${backend}`]
+    }
     const term = spawn(process.env.SHELL, args, {
       cols,
       cwd: process.env.HOME,
@@ -36,6 +42,7 @@ export class Term {
     })
     logger.info('Created term %s', id)
     this.socket.emit('created', {
+      backend,
       container,
       id,
       process: process.env.SHELL,

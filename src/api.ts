@@ -32,13 +32,7 @@ export class Api {
   private termHandler(socket: socketIo.Socket) {
     const term = new Term(socket)
     socket.on('create', (msg) => {
-      let args: string[] = []
-      if (msg.container) {
-        args = ['-c', `docker exec -it ${msg.container} /usr/bin/env TERM=$TERM /bin/bash`]
-      } else if (process.env.DOCKER_MACHINE_NAME) {
-        args = ['-c', `docker-machine ssh ${process.env.DOCKER_MACHINE_NAME}`]
-      }
-      term.create(msg.cols, msg.rows, args, msg.container)
+      term.create(msg.cols, msg.rows, msg.backend, msg.container)
     })
     socket.on('destroy', (msg) => {
       term.destroy(msg.id)
