@@ -51,6 +51,7 @@ describe('term', () => {
     let id = null
     const term = new Term(serverSocket)
     clientSocket.on('created', (data) => {
+      expect(data.backend).toEqual('')
       expect(data.container).toEqual('')
       expect(data.id).toEqual(id)
       expect(data.process).toEqual(process.env.SHELL)
@@ -82,7 +83,7 @@ describe('term', () => {
       }
       term.destroy(id)
       done()
-    }, 100)
+    }, 200)
   })
 
   it('resize', (done) => {
@@ -101,12 +102,12 @@ describe('term', () => {
     term.create()
     setTimeout(() => {
       const l = res.split('\r\n')
-      const r = l[1].split('\r')
+      const r = l[l.length - 3].split('\r')
       if (!isTravis) {
         expect(r.length).toEqual(2)
       }
       term.destroy(id)
       done()
-    }, 100)
+    }, 200)
   })
 })

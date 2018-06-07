@@ -8,7 +8,7 @@
   "scripts": {
     "build": "npm rebuild node-pty && tsc",
     "build:docker": "VERSION=`node -pe \"require('./package.json').version\"` && npm run build && docker build -t npg-server:${VERSION} .",
-    "build:linux": "npm run build && electron-rebuild -f -w node-pty && electron-packager . --platform=linux --arch=x64 --prune=true --asar=true --out=packages --overwrite",
+    "build:linux": "npm run build && electron-rebuild -f -w node-pty && electron-packager . --platform=linux --arch=x64 --prune=true --out=packages --overwrite",
     "build:mac": "npm run build && electron-rebuild -f -w node-pty && electron-packager . --platform=darwin --arch=x64 --prune=true --out=packages --overwrite",
     "docker": "VERSION=`node -pe \"require('./package.json').version\"` && docker run --name npg-server --rm -it -p 8080:8080 npg-server:${VERSION}",
     "electron": "npm run build && electron-rebuild -f -w node-pty && electron dist/main.js",
