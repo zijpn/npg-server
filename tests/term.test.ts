@@ -102,8 +102,8 @@ describe('term', () => {
     term.create()
     setTimeout(() => {
       const l = res.split('\r\n')
-      const r = l[l.length - 3].split('\r')
       if (!isTravis) {
+        const r = l[l.length - 3].split('\r')
         expect(r.length).toEqual(2)
       }
       term.destroy(id)
