@@ -19,7 +19,7 @@ export class Api {
   }
 
   private logHandler(socket: socketIo.Socket) {
-    const memLogger = logger.transports.mem as MemLogger
+    const memLogger = logger.transports[0] as MemLogger
     socket.emit('log', memLogger.archive)
     memLogger.on('log', (log) => {
       socket.emit('log', [log])

@@ -1,4 +1,5 @@
-import { LogCallback, Logger, LoggerInstance, Transport, TransportInstance, transports } from 'winston'
+import { createLogger, format, transports } from 'winston'
+import Transport from 'winston-transport'
 
 export const maxlog = 500
 
@@ -8,16 +9,14 @@ export class MemLogger extends Transport {
 
   constructor() {
     super()
-    this.name = 'mem'
-    this.level = 'debug'
     this.archive = []
   }
 
-  public log(level: string, msg: string, meta: any, callback: LogCallback) {
+  public log(info: any, callback: () => void) {
     // store this message
     const entry = {
-      level,
-      msg,
+      level: info.level,
+      msg: info.message,
       timestamp: new Date(),
     }
     this.archive.push(entry)
@@ -28,22 +27,27 @@ export class MemLogger extends Transport {
     // emit event
     this.emit('log', entry)
     // callback indicating success
-    callback(null)
+    callback()
   }
 }
 
-const tp: TransportInstance[] = [
+const tp: Transport[] = [
   new MemLogger(),
 ]
 
 if (process.env.NODE_ENV !== 'test') {
   tp.push(new transports.Console({
-    colorize: true,
-    timestamp: () => new Date().toLocaleString(),
+    format: format.combine(
+      format.colorize(),
+      format.timestamp({
+        format: 'YYYY-MM-DD HH:mm:ss',
+      }),
+      format.printf((info) => `${info.timestamp} ${info.level}: ${info.message}`),
+    ),
   }))
 }
 
-export const logger: LoggerInstance = new Logger({
+export const logger = createLogger({
   exitOnError: false,
   level: 'debug',
   transports: tp,
