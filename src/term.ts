@@ -27,19 +27,8 @@ export class Term {
     })
     const id = term.pid
     this.terms[id] = term
-    term.on('data', (data) => {
-      this.socket.emit('data', {
-        data,
-        id,
-      })
-    })
-    term.on('close', () => {
-      // Make sure it closes on the client side
-      this.socket.emit('close', { id })
-      // Ensure removal
-      Reflect.deleteProperty(this.terms, id)
-      logger.info('Closed term %s', id)
-    })
+    term.on('data', (data) => this.onData(id, data))
+    term.on('close', () => this.onClose(id))
     logger.info('Created term %s', id)
     this.socket.emit('created', {
       backend,
@@ -67,5 +56,20 @@ export class Term {
       logger.debug('Resize term %s to %dx%d', id, cols, rows)
       this.terms[id].resize(cols, rows)
     }
+  }
+
+  private onData(id: number, data: any) {
+    this.socket.emit('data', {
+      data,
+      id,
+    })
+  }
+
+  private onClose(id: number) {
+    // Make sure it closes on the client side
+    this.socket.emit('close', { id })
+    // Ensure removal
+    Reflect.deleteProperty(this.terms, id)
+    logger.info('Closed term %s', id)
   }
 }

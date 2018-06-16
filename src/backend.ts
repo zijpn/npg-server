@@ -38,7 +38,6 @@ export class Backend {
         const env = execa.sync('docker-machine', ['inspect', name]).stdout
         const obj = JSON.parse(env)
         const host = obj.Driver.IPAddress
-        const port = obj.Driver.EnginePort
         const certPath = obj.HostOptions.AuthOptions.StorePath
         this.machine.push({
           docker: new Docker({
@@ -46,7 +45,7 @@ export class Backend {
             cert: fs.readFileSync(certPath + '/cert.pem'),
             host,
             key: fs.readFileSync(certPath + '/key.pem'),
-            port: parseInt(port, 10),
+            port: parseInt(obj.Driver.EnginePort, 10),
           }),
           host,
           name,
