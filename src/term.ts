@@ -29,7 +29,7 @@ export class Term {
     this.terms[id] = term
     term.on('data', (data) => this.onData(id, data))
     term.on('close', () => this.onClose(id))
-    logger.info('Created term %s', id)
+    logger.info(`Created term ${id}`)
     this.socket.emit('created', {
       backend,
       container,
@@ -53,7 +53,7 @@ export class Term {
 
   public resize(id: number, cols: number, rows: number) {
     if (this.terms[id]) {
-      logger.debug('Resize term %s to %dx%d', id, cols, rows)
+      logger.debug(`Resize term ${id} to ${cols}x${rows}`)
       this.terms[id].resize(cols, rows)
     }
   }
@@ -70,6 +70,6 @@ export class Term {
     this.socket.emit('close', { id })
     // Ensure removal
     Reflect.deleteProperty(this.terms, id)
-    logger.info('Closed term %s', id)
+    logger.info(`Closed term ${id}`)
   }
 }
