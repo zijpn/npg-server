@@ -67,13 +67,14 @@ export class Api {
     backend.status().then((status) => {
       status.forEach((_, idx) => {
         // send to client when different or when client has just (re-)connected
-        if (status[idx].status !== status[idx].previous || this.pollTimeout === 0) {
-          logger.info(`Backend ${status[idx].name} ${status[idx].host} ${status[idx].status}`)
+        const m = status[idx]
+        if (m.info.status !== m.last.status || this.pollTimeout === 0) {
+          logger.info(`Backend ${m.name} ${m.host} ${m.info.status}`)
           const res = status.map((obj) => {
             return {
               host: obj.host,
               name: obj.name,
-              status: obj.status,
+              status: obj.info.status,
             }
           })
           socket.emit('backend', res)

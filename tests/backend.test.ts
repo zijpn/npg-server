@@ -14,7 +14,7 @@ jest.mock('execa', () => {
           if (args) {
             switch (args[0]) {
               case 'status':
-                result.stdout = 'Running'
+                result.stdout = 'Stopped'
                 break
             }
           }
@@ -68,7 +68,7 @@ describe('backend', () => {
     backend.machine.forEach((m, idx) => {
       expect(m.host).toMatch(/[0-9]*.[0-9]*.[0-9]*.[0-9]*/)
       expect(m.name).toMatch(Backend.list()[idx])
-      expect(m.status).toEqual('unknown')
+      expect(m.info.status).toEqual('unknown')
     })
   })
 
@@ -90,8 +90,8 @@ describe('backend', () => {
   it('status', (done) => {
     const backend = new Backend()
     backend.status().then((status) => {
-      expect(backend.machine[0].status).toBe('Running')
-      expect(backend.machine[1].status).toBe('Running')
+      expect(backend.machine[0].info.status).toBe('Stopped')
+      expect(backend.machine[1].info.status).toBe('Stopped')
       done()
     })
   })
