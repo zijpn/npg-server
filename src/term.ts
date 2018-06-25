@@ -1,11 +1,10 @@
 import { spawn } from 'node-pty'
-import { ITerminal } from 'node-pty/lib/interfaces'
 import socketIo from 'socket.io'
 import { logger } from './logger'
 
 export class Term {
   public socket: socketIo.Socket
-  public terms: { [key: number]: ITerminal }
+  public terms: { [key: number]: any }
 
   constructor(socket: socketIo.Socket) {
     this.socket = socket
@@ -19,7 +18,7 @@ export class Term {
     } else if (backend) {
       args = ['-c', `docker-machine ssh ${backend}`]
     }
-    const term = spawn(process.env.SHELL, args, {
+    const term = spawn(process.env.SHELL || '/bin/bash', args, {
       cols,
       cwd: process.env.HOME,
       name: 'xterm',
@@ -28,7 +27,7 @@ export class Term {
     const id = term.pid
     this.terms[id] = term
     term.on('data', (data) => this.onData(id, data))
-    term.on('close', () => this.onClose(id))
+    term.on('exit', () => this.onClose(id))
     logger.info(`Created term ${id}`)
     this.socket.emit('created', {
       backend,
