@@ -18,7 +18,7 @@ RUN npm install --production \
  && npm install -g machine-share
 
 # install docker machine and import credentials 
-RUN curl -L --silent https://github.com/docker/machine/releases/download/v0.14.0/docker-machine-Linux-x86_64 > /tmp/docker-machine \
+RUN curl -L --silent https://github.com/docker/machine/releases/download/v0.15.0/docker-machine-Linux-x86_64 > /tmp/docker-machine \
  && install /tmp/docker-machine /usr/local/bin/docker-machine \
  && rm /tmp/docker-machine \
  && cd backend \
