@@ -1,6 +1,6 @@
 module.exports = {
   transform: {
-    '^.+\\.ts$': './node_modules/ts-jest/preprocessor.js'
+    '^.+\\.ts$': 'ts-jest'
   },
   moduleFileExtensions: [
     'ts',
