@@ -5,7 +5,7 @@ import { Term } from './term'
 
 export class Api {
 
-  private pollTimeout: number = 0
+  private pollTimeout: any = 0
 
   public dispatch(io: socketIo.Server): void {
     const ioLog = io.of('/log')

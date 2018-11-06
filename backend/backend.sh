@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DOCKER_VERSION="18.03"
+DOCKER_VERSION="18.06"
 
 function create_machine
 {
