@@ -15,7 +15,7 @@
     "serve": "npm rebuild node-pty && PORT=3000 ts-node src/index.ts",
     "dev": "npm rebuild node-pty && NODE_ENV=development ts-node-dev --no-deps --respawn --transpileOnly src/index.ts",
     "lint": "tslint -t stylish -c tslint.json -p tsconfig.json --fix",
-    "schema": "ajv -s schema/npg-project-schema -d schema/npg-project",
+    "schema": "ajv -s schema/npg-schema -d schema/npg-example-project",
     "dep": "npm-check -s",
     "test": "jest --coverage --no-cache --verbose",
     "start": "NODE_ENV=production node dist"

@@ -12,8 +12,10 @@ The [API] is based on the OpenAPI specification ([OAS]).
 
 ## Projects
 
-Projects are stored as JSON files and validated by a [schema].
+Projects are stored as JSON files and validated by a [schema]. <br>
+The schema file was generated from `npg-example-project.json`, using [quicktype.io].
 
 [API]: https://app.swaggerhub.com/apis/npg/server/1.0.0
 [OAS]: https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md
 [schema]: https://spacetelescope.github.io/understanding-json-schema/
+[quicktype.io]: https://app.quicktype.io/

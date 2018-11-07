@@ -1,5 +1,4 @@
 {
-    "$schema": "./npg-project-schema.json",
     "name": "example",
     "id": 1,
     "topology": {
@@ -25,7 +24,9 @@
             {
                 "backend": "npg-02",
                 "name": "node3",
-                "image": "alpine:3.6"
+                "image": "alpine:3.6",
+                "x": 223,
+                "y": 423
             }
         ],
         "links": [
@@ -37,7 +38,9 @@
                 ],
                 "netem": {
                     "node": "node1",
+                    "bw_up": 1000,
                     "bw_down": 1000,
+                    "delay_up": 0,
                     "delay_down": 40
                 }
             },
@@ -46,7 +49,19 @@
                 "nodes": [
                     "node2",
                     "node3"
-                ]
+                ],
+                "x": 100,
+                "y": 120
+            },
+            {
+                "name": "link3",
+                "nodes": [
+                    "node1",
+                    "node3"
+                ],
+                "netem": {
+                    "node": "node1"
+                }
             }
         ]
     }

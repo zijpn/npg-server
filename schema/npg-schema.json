@@ -1,0 +1,151 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/Npg",
+    "definitions": {
+        "Npg": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "topology": {
+                    "$ref": "#/definitions/Topology"
+                }
+            },
+            "required": [
+                "id",
+                "name",
+                "topology"
+            ],
+            "title": "Npg"
+        },
+        "Topology": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "backends": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Backend"
+                    }
+                },
+                "nodes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Node"
+                    }
+                },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                }
+            },
+            "required": [
+                "backends",
+                "links",
+                "nodes"
+            ],
+            "title": "Topology"
+        },
+        "Backend": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "host": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "host"
+            ],
+            "title": "Backend"
+        },
+        "Link": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "nodes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "netem": {
+                    "$ref": "#/definitions/Netem"
+                },
+                "x": {
+                    "type": "integer"
+                },
+                "y": {
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "name",
+                "nodes"
+            ],
+            "title": "Link"
+        },
+        "Netem": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "node": {
+                    "type": "string"
+                },
+                "bw_up": {
+                    "type": "integer"
+                },
+                "bw_down": {
+                    "type": "integer"
+                },
+                "delay_up": {
+                    "type": "integer"
+                },
+                "delay_down": {
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "node"
+            ],
+            "title": "Netem"
+        },
+        "Node": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "backend": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "x": {
+                    "type": "integer"
+                },
+                "y": {
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "backend",
+                "image",
+                "name"
+            ],
+            "title": "Node"
+        }
+    }
+}
