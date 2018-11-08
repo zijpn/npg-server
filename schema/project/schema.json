@@ -142,7 +142,6 @@
             },
             "required": [
                 "backend",
-                "image",
                 "name"
             ],
             "title": "Node"

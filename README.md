@@ -8,7 +8,8 @@
 
 ## API
 
-The `schema/api/npgapi.json` is based on the [AsyncAPI] specification.
+The `schema/api/npgapi.json` is based on the [AsyncAPI] specification. <br>
+Old OAS3 https://app.swaggerhub.com/apis/npg/server/1.0.0
 
 #### Docgen
 ```

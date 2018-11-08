@@ -13,8 +13,7 @@
         "nodes": [
             {
                 "backend": "npg-01",
-                "name": "node1",
-                "image": "alpine:3.6"
+                "name": "node1"
             },
             {
                 "backend": "npg-01",
