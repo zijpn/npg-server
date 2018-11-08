@@ -8,14 +8,24 @@
 
 ## API
 
-The [API] is based on the OpenAPI specification ([OAS]).
+The `schema/api/npgapi.json` is based on the [AsyncAPI] specification.
+
+#### Docgen
+```
+npx adg schema/api/npgapi.json
+```
+https://github.com/asyncapi/docgen/issues/32
+
+#### Codegen
+
+TBC
 
 ## Projects
 
-Projects are stored as JSON files and validated by a [schema]. <br>
-The schema file was generated from `npg-example-project.json`, using [quicktype.io].
+Projects are stored as JSON files and validated by the `schema/project/schema.json` [schema]. <br>
+The schema file was generated from `schema/project/example.json`, using [quicktype.io].
 
 [API]: https://app.swaggerhub.com/apis/npg/server/1.0.0
-[OAS]: https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md
+[AsyncAPI]: https://www.asyncapi.com
 [schema]: https://spacetelescope.github.io/understanding-json-schema/
 [quicktype.io]: https://app.quicktype.io/
